@@ -29,6 +29,8 @@ jobs:
           pip install pytest
 
       - name: Run tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: pytest
 
       - name: Log in to Azure
