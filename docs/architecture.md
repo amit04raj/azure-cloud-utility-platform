@@ -8,6 +8,8 @@ The application is written in Python using FastAPI. The frontend is served by th
 
 The first version has deliberately been kept simple. There is no database, container platform, or separate frontend service at this stage. The focus was to build a working application, deploy it to Azure, and establish a clean foundation that can be extended later.
 
+![Azure Cloud Utility Platform Architecture](architecture-diagram.png)
+
 ### Current Architecture
 
 A user accesses the application through HTTPS. The request reaches the Azure App Service, where the FastAPI application either serves the web interface or handles one of the utility API requests.
