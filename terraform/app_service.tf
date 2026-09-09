@@ -7,7 +7,7 @@ resource "azurerm_service_plan" "utility_hub" {
   sku_name = "B1"
 
   tags = {
-    project     = "utility-hub"
+    project     = "azure-utility-hub"
     environment = "portfolio"
     managed_by  = "terraform"
   }
@@ -38,7 +38,7 @@ resource "azurerm_linux_web_app" "utility_hub" {
   }
 
   tags = {
-    project     = "utility-hub"
+    project     = "azure-utility-hub"
     environment = "portfolio"
     managed_by  = "terraform"
   }
