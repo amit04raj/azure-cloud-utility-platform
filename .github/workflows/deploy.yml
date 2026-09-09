@@ -44,4 +44,9 @@ jobs:
         uses: azure/webapps-deploy@v3
         with:
           app-name: app-utility-hub
-          package: .    
+          package: .   
+         
+      - name: Verify deployment
+        run: |
+          response=$(curl --fail --silent --show-error https://app-utility-hub.azurewebsites.net/health)
+          echo "Health check response: $response"    
