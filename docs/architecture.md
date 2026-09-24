@@ -225,31 +225,36 @@ After the initial resources were created, subsequent `terraform plan` runs showe
 
 ### Application Deployment
 
-Application deployment is currently performed separately using the Azure CLI.
+Application deployment is automated through GitHub Actions.
 
-The application is packaged and deployed to the Azure Web App. Azure's deployment build process installs the dependencies specified in `requirements.txt`.
+The deployment workflow is triggered by pushes to the `main` branch or manually through GitHub Actions.
 
 The current deployment flow is:
 
-
-Local Application
-       │
-       ▼
-  Build Package
-       │
-       ▼
-  Azure CLI Deploy
-       │
-       ▼
-Azure App Service
-       │
-       ▼
-FastAPI Application
-
-
-The current process is intentionally simple. GitHub is used for source control, while application deployment is still initiated manually.
-
-A CI/CD pipeline is planned for a later stage.
+```text
+GitHub Push
+     │
+     ▼
+GitHub Actions
+     │
+     ▼
+Set up Python
+     │
+     ▼
+Install Dependencies
+     │
+     ▼
+Run Automated Tests
+     │
+     ▼
+Authenticate to Azure using GitHub OIDC
+     │
+     ▼
+Deploy to Azure App Service
+     │
+     ▼
+Verify /health Endpoint
+```
 
 ## 4. Security Architecture
 
@@ -519,7 +524,7 @@ There is currently no multi-region deployment, disaster recovery architecture, d
 
 Those capabilities can be introduced later if the application's requirements justify them.
 
-### Future Testing Improvements
+### Testing Improvements
 
 The testing process can eventually be expanded to include:
 
@@ -529,8 +534,6 @@ The testing process can eventually be expanded to include:
 * Dependency vulnerability scanning
 * Terraform validation
 * Automated Terraform plan checks
-* CI/CD test execution
-* Deployment smoke tests
 
 A future deployment pipeline can follow this general pattern:
 
@@ -546,13 +549,7 @@ Automated Tests
     ├── Failed ──► Stop
     │
     ▼
-Infrastructure Validation
-    │
-    ▼
-   Build
-    │
-    ▼
-Deployment
+Azure OIDC Authentication
     │
     ▼
 Health Check
@@ -608,24 +605,29 @@ The Terraform provider lock file is retained in the repository so that provider 
 
 ### Current Deployment Model
 
-At the current stage, GitHub is primarily used for source control.
+GitHub is used for source control and automated application deployment.
 
-Infrastructure is managed with Terraform, while application deployment is initiated manually through the Azure CLI.
+Terraform manages the Azure infrastructure, while GitHub Actions manages application testing and deployment.
 
-This gives the project a working separation between:
+The responsibilities are intentionally separated:
 
-
+```text
 Source Code
     │
     ├── Application
-    ├── Tests
-    └── Infrastructure
-             │
-             ▼
-           Azure
+    │       │
+    │       └── GitHub Actions
+    │              │
+    │              ├── Tests
+    │              ├── Azure OIDC Login
+    │              ├── App Service Deployment
+    │              └── Health Check
+    │
+    └── Terraform
+            │
+            └── Azure Infrastructure
 
-
-The next major improvement to this workflow is CI/CD, which will connect source control with automated testing, validation, and deployment.
+```
 
 ## 9. Current State and Future Direction
 
